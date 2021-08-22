@@ -8,6 +8,12 @@ class ExtendedEnum(Enum):
         return list(map(lambda c: c.value, cls))
 
 
+class Quality(ExtendedEnum):
+    GOOD = "good"
+    POOR = "poor"
+    BAD = "bad"
+
+
 class ManualLevel(ExtendedEnum):
     OFF = "Off"
     LEVEL1 = "Level1"
