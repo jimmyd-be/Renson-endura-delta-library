@@ -1,10 +1,20 @@
+import pathlib
+
 from setuptools import find_packages, setup
+
+# The directory containing this file
+HERE = pathlib.Path(__file__).parent
+
+# The text of the README file
+README = (HERE / "README.md").read_text()
 
 setup(
     name='rensonVentilationLib',
     packages=find_packages(include=['rensonVentilationLib']),
     version='0.1.0',
     description='Unofficial Renson ventilation Python library',
+    long_description=README,
+    long_description_content_type="text/markdown",
     author='JimmyD-be',
     license='MIT',
     install_requires=['requests==2.26.0'],
