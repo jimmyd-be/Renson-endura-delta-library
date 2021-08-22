@@ -11,9 +11,9 @@ class FieldEnum(enum.Enum):
         obj._value_ = value
         return obj
 
-    def __init__(self, name, type):
+    def __init__(self, name, field_type):
         self.name = name
-        self.type = type
+        self.type = field_type
 
     CO2_FIELD = "CO2", DataType.QUALITY
     AIR_QUALITY_FIELD = "IAQ", DataType.QUALITY

@@ -1,7 +1,14 @@
 from enum import Enum
 
 
-class ManualLevel(Enum):
+class ExtendedEnum(Enum):
+
+    @classmethod
+    def list(cls):
+        return list(map(lambda c: c.value, cls))
+
+
+class ManualLevel(ExtendedEnum):
     OFF = "Off"
     LEVEL1 = "Level1"
     LEVEL2 = "Level2"
@@ -9,7 +16,7 @@ class ManualLevel(Enum):
     LEVEL4 = "Level4"
 
 
-class TimerLevel(Enum):
+class TimerLevel(ExtendedEnum):
     LEVEL1 = "Level1"
     LEVEL2 = "Level2"
     LEVEL3 = "Level3"
@@ -18,9 +25,28 @@ class TimerLevel(Enum):
     BREEZE = "Breeze"
 
 
-class DataType(Enum):
+class DataType(ExtendedEnum):
     NUMERIC = "numeric"
     STRING = "string"
     LEVEL = "level"
     QUALITY = "quality"
     BOOLEAN = "boolean"
+
+
+class ServiceNames(ExtendedEnum):
+    SET_MANUAL_LEVEL_FIELD = "Manual level"
+    TIME_AND_DATE_FIELD = "Date and time"
+    TIMER_FIELD = "Ventilation timer"
+    BREEZE_TEMPERATURE_FIELD = "Breeze activation temperature"
+    BREEZE_ENABLE_FIELD = "Breeze enable"
+    BREEZE_LEVEL_FIELD = "Breeze level"
+    DAYTIME_FIELD = "Start daytime"
+    NIGHTTIME_FIELD = "Start night-time"
+    DAY_POLLUTION_FIELD = "Day pollution-triggered ventilation level"
+    NIGHT_POLLUTION_FIELD = "Night pollution-triggered ventilation level"
+    HUMIDITY_CONTROL_FIELD = "Trigger internal pollution alert on RH"
+    AIR_QUALITY_CONTROL_FIELD = "Trigger internal pollution alert on IAQ"
+    CO2_CONTROL_FIELD = "Trigger internal pollution alert on CO2"
+    CO2_THRESHOLD_FIELD = "CO2 threshold"
+    CO2_HYSTERESIS_FIELD = "CO2 hysteresis"
+    FILTER_DAYS_FIELD = "Filter preset time"
