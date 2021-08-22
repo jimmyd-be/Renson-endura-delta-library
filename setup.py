@@ -4,7 +4,7 @@ setup(
     name='rensonVentilationLib',
     packages=find_packages(include=['rensonVentilationLib']),
     version='0.1.0',
-    description='Unofficial renson ventilation Python library',
+    description='Unofficial Renson ventilation Python library',
     author='JimmyD-be',
     license='MIT',
     install_requires=['requests==2.26.0'],
