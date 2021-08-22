@@ -1,5 +1,4 @@
 import requests_mock
-import requests
 
 from rensonVentilationLib.data import RensonData
 from rensonVentilationLib.fieldEnum import FieldEnum, CO2_FIELD, CURRENT_LEVEL_FIELD, FROST_PROTECTION_FIELD, \
