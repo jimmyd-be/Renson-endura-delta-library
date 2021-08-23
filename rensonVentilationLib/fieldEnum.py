@@ -1,18 +1,23 @@
+"""Enum of all the possible fields that can be read."""
 from rensonVentilationLib.generalEnum import DataType
 
 
-class FieldEnum():
+class FieldEnum:
+    """Enum of all the possible fields that can be read."""
 
     name: str = None
     field_type: DataType = None
 
     def __init__(self, name: str, field_type: DataType):
+        """Create enum with values name and field type."""
         self.name = name
         self.field_type = field_type
 
 
-CO2_FIELD = FieldEnum("CO2", DataType.QUALITY)
+CO2_QUALITY_FIELD = FieldEnum("CO2", DataType.QUALITY)
 AIR_QUALITY_FIELD = FieldEnum("IAQ", DataType.QUALITY)
+CO2_FIELD = FieldEnum("CO2", DataType.NUMERIC)
+AIR_FIELD = FieldEnum("IAQ", DataType.NUMERIC)
 CURRENT_LEVEL_FIELD = FieldEnum("Current ventilation level", DataType.LEVEL)
 CURRENT_AIRFLOW_EXTRACT_FIELD = FieldEnum("Current ETA airflow", DataType.NUMERIC)
 CURRENT_AIRFLOW_INGOING_FIELD = FieldEnum("Current SUP airflow", DataType.NUMERIC)

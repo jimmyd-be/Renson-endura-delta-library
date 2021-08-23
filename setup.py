@@ -11,7 +11,7 @@ README = (HERE / "README.md").read_text()
 setup(
     name='rensonVentilationLib',
     packages=find_packages(include=['rensonVentilationLib']),
-    version='0.1.0',
+    version='0.2.0',
     description='Unofficial Renson ventilation Python library',
     long_description=README,
     long_description_content_type="text/markdown",
@@ -21,4 +21,9 @@ setup(
     setup_requires=['pytest-runner'],
     tests_require=['pytest==4.4.1', 'requests_mock==1.9.3'],
     test_suite='tests',
+    url="https://github.com/jimmyd-be/Renson-ventilation-library",
+    project_urls={
+        "Bug Tracker": "https://github.com/jimmyd-be/Renson-ventilation-library/issues",
+    },
+    python_requires=">=3.6"
 )

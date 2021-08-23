@@ -1,20 +1,27 @@
+"""File that contain all generic enums."""
 from enum import Enum
 
 
 class ExtendedEnum(Enum):
+    """Special enum for creating list of it."""
 
     @classmethod
     def list(cls):
+        """Get list of all values in the enum."""
         return list(map(lambda c: c.value, cls))
 
 
 class Quality(ExtendedEnum):
+    """Enum with all quality values."""
+
     GOOD = "good"
     POOR = "poor"
     BAD = "bad"
 
 
 class ManualLevel(ExtendedEnum):
+    """Enum with all level values for manual setup."""
+
     OFF = "Off"
     LEVEL1 = "Level1"
     LEVEL2 = "Level2"
@@ -23,6 +30,8 @@ class ManualLevel(ExtendedEnum):
 
 
 class TimerLevel(ExtendedEnum):
+    """Enum with all timer levels."""
+
     LEVEL1 = "Level1"
     LEVEL2 = "Level2"
     LEVEL3 = "Level3"
@@ -32,6 +41,8 @@ class TimerLevel(ExtendedEnum):
 
 
 class DataType(ExtendedEnum):
+    """Enum with all data types the library can return."""
+
     NUMERIC = "numeric"
     STRING = "string"
     LEVEL = "level"
@@ -40,6 +51,8 @@ class DataType(ExtendedEnum):
 
 
 class ServiceNames(ExtendedEnum):
+    """All the service fields of the Renson ventilation unit."""
+
     SET_MANUAL_LEVEL_FIELD = "Manual level"
     TIME_AND_DATE_FIELD = "Date and time"
     TIMER_FIELD = "Ventilation timer"
