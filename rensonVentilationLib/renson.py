@@ -6,7 +6,7 @@ from datetime import datetime
 
 import requests
 
-from rensonVentilationLib.fieldEnum import FieldEnum
+from rensonVentilationLib.fieldEnum import FieldEnum, FIRMWARE_VERSION
 from rensonVentilationLib.generalEnum import (ManualLevel, Quality,
                                               ServiceNames, TimerLevel)
 
@@ -26,6 +26,7 @@ class RensonVentilation:
 
     data_url = "http://[host]/JSON/ModifiedItems?wsn=150324488709"
     service_url = "http://[host]/JSON/Vars/[field]?index0=0&index1=0&index2=0"
+    firmware_server_url = "http://www.renson-app.com/endura_delta/firmware/check.php"
 
     all_data_cache = None
     last_cache_refresh = None
@@ -236,3 +237,19 @@ class RensonVentilation:
 
         if r.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
+
+    def is_firmware_up_to_date(self) -> bool:
+        """Check if the Renson firmware is up to date."""
+        _LOGGER.info("update firmware check")
+
+        version = self.get_data_string(FIRMWARE_VERSION).split()[-1]
+        _LOGGER.info(version)
+
+        json_string = '{"a":"check", "name":"D_' + version + '.fuf"}'
+        _LOGGER.info(json_string)
+
+        response_server = requests.post(self.firmware_server_url, data=json_string)
+        if response_server.status_code == 200:
+            return bool((response_server.json())["latest"])
+
+        return False

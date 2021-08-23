@@ -14,6 +14,7 @@ class FieldEnum:
         self.field_type = field_type
 
 
+FIRMWARE_VERSION = FieldEnum("Firmware version", DataType.STRING)
 CO2_QUALITY_FIELD = FieldEnum("CO2", DataType.QUALITY)
 AIR_QUALITY_FIELD = FieldEnum("IAQ", DataType.QUALITY)
 CO2_FIELD = FieldEnum("CO2", DataType.NUMERIC)
