@@ -1,4 +1,4 @@
-name: Python package
+name: Production Python package
 
 on:
   push:

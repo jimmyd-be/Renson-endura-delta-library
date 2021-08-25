@@ -8,7 +8,7 @@ import requests
 
 from rensonVentilationLib.fieldEnum import FieldEnum, FIRMWARE_VERSION
 from rensonVentilationLib.generalEnum import (ManualLevel, Quality,
-                                              ServiceNames, TimerLevel)
+                                              ServiceNames, TimerLevel, DataType)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -61,26 +61,39 @@ class RensonVentilation:
 
     def get_data_numeric(self, field: FieldEnum) -> float:
         """Get the value of the field and convert it to a numeric type."""
+
+        if field.field_type is not DataType.NUMERIC:
+            raise ValueError("Field is not of type numeric")
+
         all_data = self.__get_all_data()
         return round(float(self.__get_field_value(all_data, field.name)))
 
     def get_data_string(self, field: FieldEnum) -> str:
-        """Get the value of the field and convert it to a string type."""
+        """Get the raw value of the field and convert it to a string type."""
         all_data = self.__get_all_data()
         return self.__get_field_value(all_data, field.name)
 
     def get_data_level(self, field: FieldEnum) -> ManualLevel:
         """Get the value of the field and convert it to a ManualLevel type."""
+        if field.field_type is not DataType.LEVEL:
+            raise ValueError("Field is not of type level")
+
         all_data = self.__get_all_data()
         return ManualLevel[self.__get_field_value(all_data, field.name).split()[-1].upper()]
 
     def get_data_boolean(self, field: FieldEnum) -> bool:
         """Get the value of the field and convert it to a boolean type."""
+        if field.field_type is not DataType.BOOLEAN:
+            raise ValueError("Field is not of type boolean")
+
         all_data = self.__get_all_data()
         return bool(int(self.__get_field_value(all_data, field.name)))
 
     def get_data_quality(self, field: FieldEnum) -> Quality:
         """Get the value of the field and convert it to a Quality type."""
+        if field.field_type is not DataType.QUALITY:
+            raise ValueError("Field is not of type quality")
+
         all_data = self.__get_all_data()
         value = round(float(self.__get_field_value(all_data, field.name)))
         if value < 950:
