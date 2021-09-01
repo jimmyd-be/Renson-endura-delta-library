@@ -2,7 +2,7 @@
 import datetime
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import requests
 
@@ -37,7 +37,7 @@ class RensonVentilation:
         self.host = host
 
     def __get_all_data(self):
-        if self.last_cache_refresh is None or self.last_cache_refresh + datetime.timedelta(0, 60) > datetime.now():
+        if self.last_cache_refresh is None or self.last_cache_refresh + timedelta(0, 60) > datetime.now():
             response = requests.get(self.data_url.replace("[host]", self.host))
 
             if response.status_code == 200:
