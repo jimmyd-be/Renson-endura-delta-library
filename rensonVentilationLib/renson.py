@@ -3,6 +3,8 @@ import datetime
 import json
 import logging
 from datetime import datetime, timedelta
+from cachetools import cached, TTLCache
+
 
 import requests
 
@@ -28,24 +30,20 @@ class RensonVentilation:
     service_url = "http://[host]/JSON/Vars/[field]?index0=0&index1=0&index2=0"
     firmware_server_url = "http://www.renson-app.com/endura_delta/firmware/check.php"
 
-    all_data_cache = None
-    last_cache_refresh = None
     host = None
 
     def __init__(self, host: str):
         """Initialize Renson Ventilation class by giving the host name or ip address."""
         self.host = host
 
+    @cached(cache=TTLCache(maxsize=1024, ttl=60))
     def __get_all_data(self):
-        if self.last_cache_refresh is None or self.last_cache_refresh + timedelta(0, 60) > datetime.now():
-            response = requests.get(self.data_url.replace("[host]", self.host))
+        response = requests.get(self.data_url.replace("[host]", self.host))
 
-            if response.status_code == 200:
-                self.all_data_cache = response.json()
-                self.last_cache_refresh = datetime.now()
-                return self.all_data_cache
-            else:
-                _LOGGER.error(f"Error communicating with API: {response.status_code}")
+        if response.status_code == 200:
+            return response.json()
+        else:
+            _LOGGER.error(f"Error communicating with API: {response.status_code}")
 
     def __get_field_value(self, all_data, fieldname: str) -> str:
         """Search for the field in the Reson JSON and return the value of it."""
