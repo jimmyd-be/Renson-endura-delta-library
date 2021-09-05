@@ -2,7 +2,7 @@
 import datetime
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from cachetools import cached, TTLCache
 
 
@@ -251,13 +251,8 @@ class RensonVentilation:
 
     def is_firmware_up_to_date(self) -> bool:
         """Check if the Renson firmware is up to date."""
-        _LOGGER.info("update firmware check")
-
         version = self.get_data_string(FIRMWARE_VERSION).split()[-1]
-        _LOGGER.info(version)
-
         json_string = '{"a":"check", "name":"D_' + version + '.fuf"}'
-        _LOGGER.info(json_string)
 
         response_server = requests.post(self.firmware_server_url, data=json_string)
         if response_server.status_code == 200:
