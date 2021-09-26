@@ -146,10 +146,12 @@ def test_connect_with_connection():
 
         assert data.connect()
 
+
 def test_connect_without_connection():
     data = RensonVentilation("example.mock")
 
-    assert data.connect() == False
+    assert not data.connect()
+
 
 def test_get_data_numeric():
     with requests_mock.Mocker() as m:
