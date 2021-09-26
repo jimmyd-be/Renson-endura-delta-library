@@ -8,7 +8,7 @@ from cachetools import cached, TTLCache
 
 import requests
 
-from rensonVentilationLib.fieldEnum import FieldEnum, FIRMWARE_VERSION
+from rensonVentilationLib.fieldEnum import FieldEnum, FIRMWARE_VERSION, CO2_FIELD
 from rensonVentilationLib.generalEnum import (ManualLevel, Quality,
                                               ServiceNames, TimerLevel, DataType)
 
@@ -35,6 +35,13 @@ class RensonVentilation:
     def __init__(self, host: str):
         """Initialize Renson Ventilation class by giving the host name or ip address."""
         self.host = host
+
+    def connect(self) -> bool:
+        try:
+            self.get_data_string(CO2_FIELD)
+        except ConnectionError:
+            return False
+        return True
 
     @cached(cache=TTLCache(maxsize=1024, ttl=60))
     def __get_all_data(self):
