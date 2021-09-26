@@ -38,10 +38,11 @@ class RensonVentilation:
 
     def connect(self) -> bool:
         try:
-            self.get_data_string(CO2_FIELD)
+            response = requests.get(self.data_url.replace("[host]", self.host))
+
+            return response.status_code == 200
         except:
             return False
-        return True
 
     @cached(cache=TTLCache(maxsize=1024, ttl=60))
     def __get_all_data(self):
