@@ -138,7 +138,7 @@ responseText: str = '{"ModifiedItems":[{"Name":"Device type","Index":[0,0,0],"Va
                     '"Value":"0.000000"}],"Wsn":34363714635} '
 
 
-def test_connect():
+def test_connect_with_connection():
     with requests_mock.Mocker() as m:
         m.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
@@ -146,7 +146,7 @@ def test_connect():
 
         assert data.connect()
 
-def test_connect():
+def test_connect_without_connection():
     data = RensonVentilation("example.mock")
 
     assert data.connect() == False
