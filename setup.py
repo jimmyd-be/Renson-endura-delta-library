@@ -11,8 +11,8 @@ README = (HERE / "README.md").read_text()
 setup(
     name='rensonVentilationLib',
     packages=find_packages(include=['rensonVentilationLib']),
-    version='1.1.1',
-    description='Unofficial Renson ventilation Python library',
+    version='1.2.0',
+    description='Unofficial Renson endura delta Python library',
     long_description=README,
     long_description_content_type="text/markdown",
     author='JimmyD-be',

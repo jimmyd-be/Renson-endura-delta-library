@@ -36,6 +36,13 @@ class RensonVentilation:
         """Initialize Renson Ventilation class by giving the host name or ip address."""
         self.host = host
 
+    def connect(self) -> bool:
+        try:
+            self.get_data_string(CO2_FIELD)
+        except ConnectionError:
+            return False
+        return True
+
     @cached(cache=TTLCache(maxsize=1024, ttl=60))
     def __get_all_data(self):
         response = requests.get(self.data_url.replace("[host]", self.host))
