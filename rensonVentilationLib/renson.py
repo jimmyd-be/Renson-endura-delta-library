@@ -39,7 +39,7 @@ class RensonVentilation:
     def connect(self) -> bool:
         try:
             self.get_data_string(CO2_FIELD)
-        except ConnectionError:
+        except ValueError:
             return False
         return True
 
