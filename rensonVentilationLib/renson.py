@@ -8,7 +8,7 @@ from cachetools import cached, TTLCache
 
 import requests
 
-from rensonVentilationLib.fieldEnum import FieldEnum, FIRMWARE_VERSION
+from rensonVentilationLib.fieldEnum import FieldEnum, FIRMWARE_VERSION, CO2_FIELD
 from rensonVentilationLib.generalEnum import (ManualLevel, Quality,
                                               ServiceNames, TimerLevel, DataType)
 
