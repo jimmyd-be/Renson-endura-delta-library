@@ -1,5 +1,5 @@
 """Enum of all the possible fields that can be read."""
-from rensonVentilationLib.generalEnum import DataType
+from renson_endura_delta.general_enum import DataType
 
 
 class FieldEnum:

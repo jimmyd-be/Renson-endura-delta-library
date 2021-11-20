@@ -9,17 +9,17 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setup(
-    name='rensonVentilationLib',
-    packages=find_packages(include=['rensonVentilationLib']),
-    version='1.2.1',
+    name='renson_endura_delta',
+    packages=find_packages(include=['renson_endura_delta']),
+    version='1.3.0',
     description='Unofficial Renson endura delta Python library',
     long_description=README,
     long_description_content_type="text/markdown",
     author='JimmyD-be',
     license='MIT',
-    install_requires=['requests==2.26.0', 'cachetools==4.2.2'],
+    install_requires=['requests>=2.26.0', 'cachetools>=4.2.2'],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest==4.4.1', 'requests_mock==1.9.3'],
+    tests_require=['pytest', 'requests_mock>=1.9.3'],
     test_suite='tests',
     url="https://github.com/jimmyd-be/Renson-ventilation-library",
     project_urls={

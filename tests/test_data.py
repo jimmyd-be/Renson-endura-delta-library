@@ -1,11 +1,11 @@
 import requests_mock
 
-from rensonVentilationLib.fieldEnum import (CO2_FIELD, CURRENT_LEVEL_FIELD,
+import pytest
+from renson_endura_delta.field_enum import (CO2_FIELD, CURRENT_LEVEL_FIELD,
                                             FROST_PROTECTION_FIELD,
                                             MANUAL_LEVEL_FIELD, CURRENT_AIRFLOW_EXTRACT_FIELD, CO2_QUALITY_FIELD)
-from rensonVentilationLib.generalEnum import ManualLevel, Quality
-from rensonVentilationLib.renson import RensonVentilation
-import pytest
+from renson_endura_delta.general_enum import ManualLevel, Quality
+from renson_endura_delta.renson import RensonVentilation
 
 responseText: str = '{"ModifiedItems":[{"Name":"Device type","Index":[0,0,0],"Value":"ED 330 T2\/B2 L SHT IAQ CO2 ' \
                     'W02"},{"Name":"MAC","Index":[0,0,0],"Value":"11:22:AA:BC:B2:45"},{"Name":"Warranty number",' \
@@ -139,8 +139,8 @@ responseText: str = '{"ModifiedItems":[{"Name":"Device type","Index":[0,0,0],"Va
 
 
 def test_connect_with_connection():
-    with requests_mock.Mocker() as m:
-        m.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
+    with requests_mock.Mocker() as mock:
+        mock.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
         data = RensonVentilation("example.mock")
 
@@ -154,8 +154,8 @@ def test_connect_without_connection():
 
 
 def test_get_data_numeric():
-    with requests_mock.Mocker() as m:
-        m.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
+    with requests_mock.Mocker() as mock:
+        mock.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
         data = RensonVentilation("example.mock")
 
@@ -163,21 +163,21 @@ def test_get_data_numeric():
 
 
 def test_get_data_with_cache():
-    with requests_mock.Mocker() as m:
-        m.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
+    with requests_mock.Mocker() as mock:
+        mock.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
         data = RensonVentilation("example.mock")
 
         assert data.get_data_numeric(CO2_FIELD) == 533
-        data.get_data_string(MANUAL_LEVEL_FIELD) == "Off"
-        data.get_data_level(CURRENT_LEVEL_FIELD) == ManualLevel.LEVEL3
-        assert m.called
-        assert m.called_once
+        assert data.get_data_string(MANUAL_LEVEL_FIELD) == "Off"
+        assert data.get_data_level(CURRENT_LEVEL_FIELD) == ManualLevel.LEVEL3
+        assert mock.called
+        assert mock.called_once
 
 
 def test_get_data_string():
-    with requests_mock.Mocker() as m:
-        m.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
+    with requests_mock.Mocker() as mock:
+        mock.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
         data = RensonVentilation("example.mock")
 
@@ -185,8 +185,8 @@ def test_get_data_string():
 
 
 def test_get_data_level():
-    with requests_mock.Mocker() as m:
-        m.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
+    with requests_mock.Mocker() as mock:
+        mock.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
         data = RensonVentilation("example.mock")
 
@@ -194,8 +194,8 @@ def test_get_data_level():
 
 
 def test_get_data_boolean():
-    with requests_mock.Mocker() as m:
-        m.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
+    with requests_mock.Mocker() as mock:
+        mock.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
         data = RensonVentilation("example.mock")
 
@@ -203,8 +203,8 @@ def test_get_data_boolean():
 
 
 def test_get_data_quality():
-    with requests_mock.Mocker() as m:
-        m.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
+    with requests_mock.Mocker() as mock:
+        mock.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
         data = RensonVentilation("example.mock")
 

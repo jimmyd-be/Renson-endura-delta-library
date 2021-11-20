@@ -8,8 +8,8 @@ from cachetools import cached, TTLCache
 
 import requests
 
-from rensonVentilationLib.fieldEnum import FieldEnum, FIRMWARE_VERSION, CO2_FIELD
-from rensonVentilationLib.generalEnum import (ManualLevel, Quality,
+from renson_endura_delta.field_enum import FieldEnum, FIRMWARE_VERSION
+from renson_endura_delta.general_enum import (ManualLevel, Quality,
                                               ServiceNames, TimerLevel, DataType)
 
 _LOGGER = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ class ValueData:
 
     def __init__(self, value):
         """Construct the class."""
-        self.Value = value
+        self.value = value
 
 
 class RensonVentilation:
@@ -52,12 +52,14 @@ class RensonVentilation:
             return response.json()
         else:
             _LOGGER.error(f"Error communicating with API: {response.status_code}")
+            return ''
 
     def __get_field_value(self, all_data, fieldname: str) -> str:
         """Search for the field in the Reson JSON and return the value of it."""
         for data in all_data["ModifiedItems"]:
             if data["Name"] == fieldname:
                 return data["Value"]
+        return ''
 
     def __get_service_url(self, field: ServiceNames):
         """Make the full url of the Renson API and return it."""
@@ -113,11 +115,11 @@ class RensonVentilation:
         """Set the manual level of the Renson unit. When set to 'Off' the unit will go back to auto program."""
         data = ValueData(level.value)
 
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.SET_MANUAL_LEVEL_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
     def sync_time(self):
@@ -142,49 +144,49 @@ class RensonVentilation:
     def set_timer_level(self, level: TimerLevel, time: int):
         """Set a level for a specific time (in minutes)."""
         data = ValueData(str(time) + " min " + level)
-        r = requests.post(self.__get_service_url(ServiceNames.TIMER_FIELD), data=json.dumps(data.__dict__))
+        response = requests.post(self.__get_service_url(ServiceNames.TIMER_FIELD), data=json.dumps(data.__dict__))
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
     def set_breeze(self, level: ManualLevel, temperature: int, activated: bool):
         """Activate/deactivate breeze feature and give breeze parameters to the function."""
         data = ValueData(level)
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.BREEZE_LEVEL_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
         data = ValueData(str(temperature))
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.BREEZE_TEMPERATURE_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
         data = ValueData(str(int(activated)))
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.BREEZE_ENABLE_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
     def set_time(self, day: str, night: str):
         """Set day and night time for the device."""
         data = ValueData(day)
-        r = requests.post(self.__get_service_url(ServiceNames.DAYTIME_FIELD), data=json.dumps(data.__dict__))
+        response = requests.post(self.__get_service_url(ServiceNames.DAYTIME_FIELD), data=json.dumps(data.__dict__))
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Start daytime cannot be set")
 
         data = ValueData(night)
-        r = requests.post(self.__get_service_url(ServiceNames.NIGTHTIME_FIELD), data=json.dumps(data.__dict__))
+        response = requests.post(self.__get_service_url(ServiceNames.NIGTHTIME_FIELD), data=json.dumps(data.__dict__))
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Start nighttime cannot be set")
 
     def set_pollution(self, day: ManualLevel, night: ManualLevel, humidity_control: bool,
@@ -192,69 +194,69 @@ class RensonVentilation:
                       co2_control: bool, co2_threshold: bool, co2_hysteresis: bool):
         """Enable/disable special auto features of the Renson unit."""
         data = ValueData(day.value)
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.DAY_POLLUTION_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
         data = ValueData(night.value)
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.NIGHT_POLLUTION_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
         data = ValueData(str(int(humidity_control)))
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.HUMIDITY_CONTROL_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
         data = ValueData(str(int(airquality_control)))
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.AIR_QUALITY_CONTROL_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
         data = ValueData(str(int(co2_control)))
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.CO2_CONTROL_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
         data = ValueData(str(int(co2_threshold)))
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.CO2_THRESHOLD_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
         data = ValueData(str(int(co2_hysteresis)))
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.CO2_HYSTERESIS_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
     def set_filter_days(self, days: int):
         """Set the filter days."""
         data = ValueData(str(int(days)))
-        r = requests.post(
+        response = requests.post(
             self.__get_service_url(ServiceNames.FILTER_DAYS_FIELD), data=json.dumps(data.__dict__)
         )
 
-        if r.status_code != 200:
+        if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
     def is_firmware_up_to_date(self) -> bool:

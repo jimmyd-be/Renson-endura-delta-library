@@ -1,7 +1,7 @@
 import requests_mock
 
-from rensonVentilationLib.generalEnum import ManualLevel
-from rensonVentilationLib.renson import RensonVentilation as Services
+from renson_endura_delta.general_enum import ManualLevel
+from renson_endura_delta.renson import RensonVentilation as Services
 
 
 def test_set_manual_level():
