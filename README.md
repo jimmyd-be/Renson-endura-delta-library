@@ -1,6 +1,6 @@
-# Renson-ventilation-library
+# Renson endura delta library
 
-An unofficial library to get and control the Renson ventilation units.
+An unofficial library to get and control the Renson Endura Delta units.
 
 Following features are support:
 - Getting data for most of the fields that can be found in the official 'Endura Delta' app.
