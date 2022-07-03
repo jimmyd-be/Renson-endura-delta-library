@@ -225,31 +225,3 @@ def test_get_data_quality():
         value = data.get_field_value(all_data, CO2_QUALITY_FIELD)
 
         assert data.parse_quality(value) == Quality.GOOD
-
-
-def test_get_data_quality_exception():
-    data = RensonVentilation("example.mock")
-
-    with pytest.raises(ValueError):
-        data.parse_quality(CURRENT_AIRFLOW_EXTRACT_FIELD)
-
-
-def test_get_data_level_exception():
-    data = RensonVentilation("example.mock")
-
-    with pytest.raises(ValueError):
-        data.parse_data_level(CURRENT_AIRFLOW_EXTRACT_FIELD)
-
-
-def test_get_data_numeric_exception():
-    data = RensonVentilation("example.mock")
-
-    with pytest.raises(ValueError):
-        data.parse_numeric(CURRENT_LEVEL_FIELD)
-
-
-def test_get_data_boolean_exception():
-    data = RensonVentilation("example.mock")
-
-    with pytest.raises(ValueError):
-        data.parse_boolean(CURRENT_LEVEL_FIELD)
