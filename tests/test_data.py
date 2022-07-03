@@ -158,8 +158,10 @@ def test_get_data_numeric():
         mock.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
         data = RensonVentilation("example.mock")
+        all_data = data.get_all_data()
+        value = data.get_field_value(all_data, CO2_FIELD.name)
 
-        assert data.get_data_numeric(CO2_FIELD) == 533
+        assert data.parse_numeric(value) == 533
 
 
 def test_get_data_with_cache():
@@ -168,9 +170,13 @@ def test_get_data_with_cache():
               text=responseText)
         data = RensonVentilation("example.mock")
 
-        assert data.get_data_numeric(CO2_FIELD) == 533
-        assert data.get_data_string(MANUAL_LEVEL_FIELD) == "Off"
-        assert data.get_data_level(CURRENT_LEVEL_FIELD) == ManualLevel.LEVEL3
+        all_data = data.get_all_data()
+        co2_value = data.get_field_value(all_data, CO2_FIELD.name)
+        current_level_value = data.get_field_value(all_data, CURRENT_LEVEL_FIELD.name)
+
+        assert data.parse_numeric(co2_value) == 533
+        assert data.get_field_value(all_data, MANUAL_LEVEL_FIELD.name) == "Off"
+        assert data.parse_data_level(current_level_value) == ManualLevel.LEVEL3
         assert mock.called
         assert mock.called_once
 
@@ -180,8 +186,9 @@ def test_get_data_string():
         mock.get("http://example.mock/JSON/ModifiedItems?wsn=150324488709",
               text=responseText)
         data = RensonVentilation("example.mock")
+        all_data = data.get_all_data()
 
-        assert data.get_data_string(MANUAL_LEVEL_FIELD) == "Off"
+        assert data.get_field_value(all_data, CURRENT_LEVEL_FIELD.name) == "Auto Level3"
 
 
 def test_get_data_level():
@@ -190,7 +197,10 @@ def test_get_data_level():
               text=responseText)
         data = RensonVentilation("example.mock")
 
-        assert data.get_data_level(CURRENT_LEVEL_FIELD) == ManualLevel.LEVEL3
+        all_data = data.get_all_data()
+        value = data.get_field_value(all_data, CURRENT_LEVEL_FIELD.name)
+
+        assert data.parse_data_level(value) == ManualLevel.LEVEL3
 
 
 def test_get_data_boolean():
@@ -199,7 +209,10 @@ def test_get_data_boolean():
               text=responseText)
         data = RensonVentilation("example.mock")
 
-        assert not data.get_data_boolean(FROST_PROTECTION_FIELD)
+        all_data = data.get_all_data()
+        value = data.get_field_value(all_data, FROST_PROTECTION_FIELD.name)
+
+        assert not data.parse_boolean(value)
 
 
 def test_get_data_quality():
@@ -208,32 +221,7 @@ def test_get_data_quality():
               text=responseText)
         data = RensonVentilation("example.mock")
 
-        assert data.get_data_quality(CO2_QUALITY_FIELD) == Quality.GOOD
+        all_data = data.get_all_data()
+        value = data.get_field_value(all_data, CO2_QUALITY_FIELD.name)
 
-
-def test_get_data_quality_exception():
-    data = RensonVentilation("example.mock")
-
-    with pytest.raises(ValueError):
-        data.get_data_quality(CURRENT_AIRFLOW_EXTRACT_FIELD)
-
-
-def test_get_data_level_exception():
-    data = RensonVentilation("example.mock")
-
-    with pytest.raises(ValueError):
-        data.get_data_level(CURRENT_AIRFLOW_EXTRACT_FIELD)
-
-
-def test_get_data_numeric_exception():
-    data = RensonVentilation("example.mock")
-
-    with pytest.raises(ValueError):
-        data.get_data_numeric(CURRENT_LEVEL_FIELD)
-
-
-def test_get_data_boolean_exception():
-    data = RensonVentilation("example.mock")
-
-    with pytest.raises(ValueError):
-        data.get_data_boolean(CURRENT_LEVEL_FIELD)
+        assert data.parse_quality(value) == Quality.GOOD

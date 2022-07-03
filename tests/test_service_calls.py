@@ -34,5 +34,5 @@ def test_is_firmware_up_to_date():
 
         service = Services("example.mock")
 
-        assert service.is_firmware_up_to_date()
+        assert service.is_firmware_up_to_date('Endura Delta 0.0.67')
         assert m.called
