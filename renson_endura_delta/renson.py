@@ -61,15 +61,15 @@ class RensonVentilation:
     def parse_value(self, value, data_type):
         """Parse value to correct type"""
         if data_type == DataType.NUMERIC:
-            return self.__parse_numeric(value)
+            return self.parse_numeric(value)
         elif data_type == DataType.STRING:
             return value
         elif data_type == DataType.LEVEL:
-            return self.__parse_data_level(value).value
+            return self.parse_data_level(value).value
         elif data_type == DataType.BOOLEAN:
-            return self.__parse_boolean(value)
+            return self.parse_boolean(value)
         elif data_type == DataType.QUALITY:
-            return self.__parse_quality(value).value
+            return self.parse_quality(value).value
 
     def __get_service_url(self, field: ServiceNames):
         """Make the full url of the Renson API and return it."""
@@ -77,19 +77,19 @@ class RensonVentilation:
             "[field]", field.value.replace(" ", "%20")
         )
 
-    def __parse_numeric(self, value: str) -> float:
+    def parse_numeric(self, value: str) -> float:
         """Get the value of the field and convert it to a numeric type."""
         return round(float(value))
 
-    def __parse_data_level(self, value: str) -> ManualLevel:
+    def parse_data_level(self, value: str) -> ManualLevel:
         """Get the value of the field and convert it to a ManualLevel type."""
         return ManualLevel[value.split()[-1].upper()]
 
-    def __parse_boolean(self, value: str) -> bool:
+    def parse_boolean(self, value: str) -> bool:
         """Get the value of the field and convert it to a boolean type."""
         return bool(int(value))
 
-    def __parse_quality(self, value: str) -> Quality:
+    def parse_quality(self, value: str) -> Quality:
         """Get the value of the field and convert it to a Quality type."""
         value = round(float(value))
         if value < 950:
@@ -249,7 +249,7 @@ class RensonVentilation:
 
     def is_firmware_up_to_date(self) -> bool:
         """Check if the Renson firmware is up to date."""
-        version = self.get_data_string(FIRMWARE_VERSION).split()[-1]
+        version = self.get_field_value(FIRMWARE_VERSION).split()[-1]
         json_string = '{"a":"check", "name":"D_' + version + '.fuf"}'
 
         response_server = requests.post(self.firmware_server_url, data=json_string)
