@@ -41,11 +41,10 @@ class RensonVentilation:
             response = requests.get(self.data_url.replace("[host]", self.host))
 
             return response.status_code == 200
-        except:
+        except Exception:
             return False
 
-    @cached(cache=TTLCache(maxsize=1024, ttl=60))
-    def __get_all_data(self):
+    def get_all_data(self):
         response = requests.get(self.data_url.replace("[host]", self.host))
 
         if response.status_code == 200:
@@ -54,12 +53,25 @@ class RensonVentilation:
             _LOGGER.error(f"Error communicating with API: {response.status_code}")
             return ''
 
-    def __get_field_value(self, all_data, fieldname: str) -> str:
+    def get_field_value(self, all_data, fieldname: str) -> str:
         """Search for the field in the Reson JSON and return the value of it."""
         for data in all_data["ModifiedItems"]:
             if data["Name"] == fieldname:
                 return data["Value"]
         return ''
+
+    def parse_value(self, value, data_type):
+        """Parse value to correct type"""
+        if data_type == DataType.NUMERIC:
+            return self.__parse_numeric(value)
+        elif data_type == DataType.STRING:
+            return value
+        elif data_type == DataType.LEVEL:
+            return self.__parse_data_level(value).value
+        elif data_type == DataType.BOOLEAN:
+            return self.__parse_boolean(value)
+        elif data_type == DataType.QUALITY:
+            return self.__parse_quality(value).value
 
     def __get_service_url(self, field: ServiceNames):
         """Make the full url of the Renson API and return it."""
@@ -67,43 +79,21 @@ class RensonVentilation:
             "[field]", field.value.replace(" ", "%20")
         )
 
-    def get_data_numeric(self, field: FieldEnum) -> float:
+    def __parse_numeric(self, value: str) -> float:
         """Get the value of the field and convert it to a numeric type."""
+        return round(float(value))
 
-        if field.field_type is not DataType.NUMERIC:
-            raise ValueError("Field is not of type numeric")
-
-        all_data = self.__get_all_data()
-        return round(float(self.__get_field_value(all_data, field.name)))
-
-    def get_data_string(self, field: FieldEnum) -> str:
-        """Get the raw value of the field and convert it to a string type."""
-        all_data = self.__get_all_data()
-        return self.__get_field_value(all_data, field.name)
-
-    def get_data_level(self, field: FieldEnum) -> ManualLevel:
+    def __parse_data_level(self, value: str) -> ManualLevel:
         """Get the value of the field and convert it to a ManualLevel type."""
-        if field.field_type is not DataType.LEVEL:
-            raise ValueError("Field is not of type level")
+        return ManualLevel[value.split()[-1].upper()]
 
-        all_data = self.__get_all_data()
-        return ManualLevel[self.__get_field_value(all_data, field.name).split()[-1].upper()]
-
-    def get_data_boolean(self, field: FieldEnum) -> bool:
+    def __parse_boolean(self, value: str) -> bool:
         """Get the value of the field and convert it to a boolean type."""
-        if field.field_type is not DataType.BOOLEAN:
-            raise ValueError("Field is not of type boolean")
+        return bool(int(value))
 
-        all_data = self.__get_all_data()
-        return bool(int(self.__get_field_value(all_data, field.name)))
-
-    def get_data_quality(self, field: FieldEnum) -> Quality:
+    def __parse_quality(self, value: str) -> Quality:
         """Get the value of the field and convert it to a Quality type."""
-        if field.field_type is not DataType.QUALITY:
-            raise ValueError("Field is not of type quality")
-
-        all_data = self.__get_all_data()
-        value = round(float(self.__get_field_value(all_data, field.name)))
+        value = round(float(value))
         if value < 950:
             return Quality.GOOD
         elif value < 1500:
