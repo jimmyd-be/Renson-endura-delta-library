@@ -161,7 +161,7 @@ def test_get_data_numeric():
         all_data = data.get_all_data()
         value = data.get_field_value(all_data, CO2_FIELD)
 
-        assert data.get_data_numeric(value) == 533
+        assert data.parse_numeric(value) == 533
 
 
 def test_get_data_with_cache():
@@ -174,9 +174,9 @@ def test_get_data_with_cache():
         co2_value = data.get_field_value(all_data, CO2_FIELD)
         current_level_value = data.get_field_value(all_data, CURRENT_LEVEL_FIELD)
 
-        assert data.__parse_numeric(co2_value) == 533
+        assert data.parse_numeric(co2_value) == 533
         assert data.get_field_value(all_data, MANUAL_LEVEL_FIELD) == "Off"
-        assert data.__parse_data_level(current_level_value) == ManualLevel.LEVEL3
+        assert data.parse_data_level(current_level_value) == ManualLevel.LEVEL3
         assert mock.called
         assert mock.called_once
 
@@ -200,7 +200,7 @@ def test_get_data_level():
         all_data = data.get_all_data()
         value = data.get_field_value(all_data, CURRENT_LEVEL_FIELD)
 
-        assert data.__parse_data_level(value) == ManualLevel.LEVEL3
+        assert data.parse_data_level(value) == ManualLevel.LEVEL3
 
 
 def test_get_data_boolean():
@@ -212,7 +212,7 @@ def test_get_data_boolean():
         all_data = data.get_all_data()
         value = data.get_field_value(all_data, FROST_PROTECTION_FIELD)
 
-        assert not data.__parse_boolean(value)
+        assert not data.parse_boolean(value)
 
 
 def test_get_data_quality():
@@ -224,32 +224,32 @@ def test_get_data_quality():
         all_data = data.get_all_data()
         value = data.get_field_value(all_data, CO2_QUALITY_FIELD)
 
-        assert data.__parse_quality(value) == Quality.GOOD
+        assert data.parse_quality(value) == Quality.GOOD
 
 
 def test_get_data_quality_exception():
     data = RensonVentilation("example.mock")
 
     with pytest.raises(ValueError):
-        data.__parse_quality(CURRENT_AIRFLOW_EXTRACT_FIELD)
+        data.parse_quality(CURRENT_AIRFLOW_EXTRACT_FIELD)
 
 
 def test_get_data_level_exception():
     data = RensonVentilation("example.mock")
 
     with pytest.raises(ValueError):
-        data.__parse_data_level(CURRENT_AIRFLOW_EXTRACT_FIELD)
+        data.parse_data_level(CURRENT_AIRFLOW_EXTRACT_FIELD)
 
 
 def test_get_data_numeric_exception():
     data = RensonVentilation("example.mock")
 
     with pytest.raises(ValueError):
-        data.__parse_numeric(CURRENT_LEVEL_FIELD)
+        data.parse_numeric(CURRENT_LEVEL_FIELD)
 
 
 def test_get_data_boolean_exception():
     data = RensonVentilation("example.mock")
 
     with pytest.raises(ValueError):
-        data.__parse_boolean(CURRENT_LEVEL_FIELD)
+        data.parse_boolean(CURRENT_LEVEL_FIELD)

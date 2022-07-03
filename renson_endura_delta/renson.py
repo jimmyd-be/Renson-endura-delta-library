@@ -247,9 +247,10 @@ class RensonVentilation:
         if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
-    def is_firmware_up_to_date(self) -> bool:
+    def is_firmware_up_to_date(self, current_version) -> bool:
         """Check if the Renson firmware is up to date."""
-        version = self.get_field_value(FIRMWARE_VERSION).split()[-1]
+        # version = self.get_field_value(FIRMWARE_VERSION).split()[-1]
+        version = current_version.split()[-1]
         json_string = '{"a":"check", "name":"D_' + version + '.fuf"}'
 
         response_server = requests.post(self.firmware_server_url, data=json_string)
