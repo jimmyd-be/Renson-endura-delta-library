@@ -3,8 +3,6 @@ import datetime
 import json
 import logging
 from datetime import datetime
-from cachetools import cached, TTLCache
-
 
 import requests
 
