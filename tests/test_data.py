@@ -159,7 +159,7 @@ def test_get_data_numeric():
               text=responseText)
         data = RensonVentilation("example.mock")
         all_data = data.get_all_data()
-        value = data.get_field_value(all_data, CO2_FIELD)
+        value = data.get_field_value(all_data, CO2_FIELD.name)
 
         assert data.parse_numeric(value) == 533
 
@@ -171,11 +171,11 @@ def test_get_data_with_cache():
         data = RensonVentilation("example.mock")
 
         all_data = data.get_all_data()
-        co2_value = data.get_field_value(all_data, CO2_FIELD)
-        current_level_value = data.get_field_value(all_data, CURRENT_LEVEL_FIELD)
+        co2_value = data.get_field_value(all_data, CO2_FIELD.name)
+        current_level_value = data.get_field_value(all_data, CURRENT_LEVEL_FIELD.name)
 
         assert data.parse_numeric(co2_value) == 533
-        assert data.get_field_value(all_data, MANUAL_LEVEL_FIELD) == "Off"
+        assert data.get_field_value(all_data, MANUAL_LEVEL_FIELD.name) == "Off"
         assert data.parse_data_level(current_level_value) == ManualLevel.LEVEL3
         assert mock.called
         assert mock.called_once
@@ -188,7 +188,7 @@ def test_get_data_string():
         data = RensonVentilation("example.mock")
         all_data = data.get_all_data()
 
-        assert data.get_field_value(all_data, CURRENT_LEVEL_FIELD) == "Off"
+        assert data.get_field_value(all_data, CURRENT_LEVEL_FIELD.name) == "Auto Level3"
 
 
 def test_get_data_level():
@@ -198,7 +198,7 @@ def test_get_data_level():
         data = RensonVentilation("example.mock")
 
         all_data = data.get_all_data()
-        value = data.get_field_value(all_data, CURRENT_LEVEL_FIELD)
+        value = data.get_field_value(all_data, CURRENT_LEVEL_FIELD.name)
 
         assert data.parse_data_level(value) == ManualLevel.LEVEL3
 
@@ -210,7 +210,7 @@ def test_get_data_boolean():
         data = RensonVentilation("example.mock")
 
         all_data = data.get_all_data()
-        value = data.get_field_value(all_data, FROST_PROTECTION_FIELD)
+        value = data.get_field_value(all_data, FROST_PROTECTION_FIELD.name)
 
         assert not data.parse_boolean(value)
 
@@ -222,6 +222,6 @@ def test_get_data_quality():
         data = RensonVentilation("example.mock")
 
         all_data = data.get_all_data()
-        value = data.get_field_value(all_data, CO2_QUALITY_FIELD)
+        value = data.get_field_value(all_data, CO2_QUALITY_FIELD.name)
 
         assert data.parse_quality(value) == Quality.GOOD
