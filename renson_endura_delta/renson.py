@@ -18,7 +18,7 @@ class ValueData:
 
     def __init__(self, value):
         """Construct the class."""
-        self.value = value
+        self.Value = value
 
 
 class RensonVentilation:
