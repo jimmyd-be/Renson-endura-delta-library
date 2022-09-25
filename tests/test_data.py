@@ -4,7 +4,7 @@ import pytest
 from renson_endura_delta.field_enum import (CO2_FIELD, CURRENT_LEVEL_FIELD,
                                             FROST_PROTECTION_FIELD,
                                             MANUAL_LEVEL_FIELD, CURRENT_AIRFLOW_EXTRACT_FIELD, CO2_QUALITY_FIELD)
-from renson_endura_delta.general_enum import ManualLevel, Quality
+from renson_endura_delta.general_enum import ManualLevel, Quality, TimerLevel
 from renson_endura_delta.renson import RensonVentilation
 
 responseText: str = '{"ModifiedItems":[{"Name":"Device type","Index":[0,0,0],"Value":"ED 330 T2\/B2 L SHT IAQ CO2 ' \
@@ -176,7 +176,7 @@ def test_get_data_with_cache():
 
         assert data.parse_numeric(co2_value) == 533
         assert data.get_field_value(all_data, MANUAL_LEVEL_FIELD.name) == "Off"
-        assert data.parse_data_level(current_level_value) == ManualLevel.LEVEL3
+        assert data.parse_data_level(current_level_value) == TimerLevel.LEVEL3
         assert mock.called
         assert mock.called_once
 
@@ -200,7 +200,7 @@ def test_get_data_level():
         all_data = data.get_all_data()
         value = data.get_field_value(all_data, CURRENT_LEVEL_FIELD.name)
 
-        assert data.parse_data_level(value) == ManualLevel.LEVEL3
+        assert data.parse_data_level(value) == TimerLevel.LEVEL3
 
 
 def test_get_data_boolean():

@@ -27,6 +27,7 @@ class ManualLevel(ExtendedEnum):
     LEVEL2 = "Level2"
     LEVEL3 = "Level3"
     LEVEL4 = "Level4"
+    BREEZE = "Breeze"
 
 
 class TimerLevel(ExtendedEnum):
