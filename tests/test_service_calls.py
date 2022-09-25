@@ -1,6 +1,6 @@
 import requests_mock
 
-from renson_endura_delta.general_enum import ManualLevel
+from renson_endura_delta.general_enum import Level
 from renson_endura_delta.renson import RensonVentilation as Services
 
 
@@ -10,7 +10,7 @@ def test_set_manual_level():
                text='ok')
 
         service = Services("example.mock")
-        service.set_manual_level(ManualLevel.LEVEL2)
+        service.set_manual_level(Level.LEVEL2)
 
         assert m.called
 

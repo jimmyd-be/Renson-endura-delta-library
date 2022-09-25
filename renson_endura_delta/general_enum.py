@@ -19,8 +19,8 @@ class Quality(ExtendedEnum):
     BAD = "bad"
 
 
-class ManualLevel(ExtendedEnum):
-    """Enum with all level values for manual setup."""
+class Level(ExtendedEnum):
+    """Enum with all level values."""
 
     OFF = "Off"
     LEVEL1 = "Level1"
@@ -28,17 +28,7 @@ class ManualLevel(ExtendedEnum):
     LEVEL3 = "Level3"
     LEVEL4 = "Level4"
     BREEZE = "Breeze"
-
-
-class TimerLevel(ExtendedEnum):
-    """Enum with all timer levels."""
-
-    LEVEL1 = "Level1"
-    LEVEL2 = "Level2"
-    LEVEL3 = "Level3"
-    LEVEL4 = "Level4"
     HOLIDAY = "Holiday"
-    BREEZE = "Breeze"
 
 
 class DataType(ExtendedEnum):
