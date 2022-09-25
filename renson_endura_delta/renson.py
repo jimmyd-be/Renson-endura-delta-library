@@ -7,8 +7,8 @@ from datetime import datetime
 import requests
 
 from renson_endura_delta.field_enum import FieldEnum, FIRMWARE_VERSION
-from renson_endura_delta.general_enum import (ManualLevel, Quality,
-                                              ServiceNames, TimerLevel, DataType)
+from renson_endura_delta.general_enum import (Level, Quality,
+                                              ServiceNames, DataType, Level)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -81,9 +81,9 @@ class RensonVentilation:
         """Get the value of the field and convert it to a numeric type."""
         return round(float(value))
 
-    def parse_data_level(self, value: str) -> TimerLevel:
+    def parse_data_level(self, value: str) -> Level:
         """Get the value of the field and convert it to a Level type."""
-        return TimerLevel[value.split()[-1].upper()]
+        return Level[value.split()[-1].upper()]
 
     def parse_boolean(self, value: str) -> bool:
         """Get the value of the field and convert it to a boolean type."""
@@ -99,7 +99,7 @@ class RensonVentilation:
         else:
             return Quality.BAD
 
-    def set_manual_level(self, level: ManualLevel):
+    def set_manual_level(self, level: Level):
         """Set the manual level of the Renson unit. When set to 'Off' the unit will go back to auto program."""
         data = ValueData(level.value)
 
@@ -129,16 +129,24 @@ class RensonVentilation:
         else:
             _LOGGER.error("Ventilation unit did not return 200")
 
-    def set_timer_level(self, level: TimerLevel, time: int):
+    def set_timer_level(self, level: Level, time: int):
         """Set a level for a specific time (in minutes)."""
+
+        if level == Level.OFF:
+            raise Exception("Off is not a valid type for setting manual level")
+
         data = ValueData(str(time) + " min " + level)
         response = requests.post(self.__get_service_url(ServiceNames.TIMER_FIELD), data=json.dumps(data.__dict__))
 
         if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
-    def set_breeze(self, level: ManualLevel, temperature: int, activated: bool):
+    def set_breeze(self, level: Level, temperature: int, activated: bool):
         """Activate/deactivate breeze feature and give breeze parameters to the function."""
+
+        if level == Level.HOLIDAY or level == Level.OFF or level == Level.BREEZE:
+            raise Exception("Holiday, Off, Breeze are not a valid types for setting breeze level")
+
         data = ValueData(level)
         response = requests.post(
             self.__get_service_url(ServiceNames.BREEZE_LEVEL_FIELD), data=json.dumps(data.__dict__)
@@ -177,10 +185,17 @@ class RensonVentilation:
         if response.status_code != 200:
             _LOGGER.error("Start nighttime cannot be set")
 
-    def set_pollution(self, day: ManualLevel, night: ManualLevel, humidity_control: bool,
+    def set_pollution(self, day: Level, night: Level, humidity_control: bool,
                       airquality_control: bool,
                       co2_control: bool, co2_threshold: bool, co2_hysteresis: bool):
         """Enable/disable special auto features of the Renson unit."""
+
+        if day == Level.HOLIDAY or day == Level.OFF or day == Level.BREEZE:
+            raise Exception("Holiday, Off, Breeze are not a valid types for setting day level")
+
+        if night == Level.HOLIDAY or night == Level.OFF or night == Level.BREEZE:
+            raise Exception("Holiday, Off, Breeze are not a valid types for setting night level")
+
         data = ValueData(day.value)
         response = requests.post(
             self.__get_service_url(ServiceNames.DAY_POLLUTION_FIELD), data=json.dumps(data.__dict__)
