@@ -81,9 +81,9 @@ class RensonVentilation:
         """Get the value of the field and convert it to a numeric type."""
         return round(float(value))
 
-    def parse_data_level(self, value: str) -> ManualLevel:
-        """Get the value of the field and convert it to a ManualLevel type."""
-        return ManualLevel[value.split()[-1].upper()]
+    def parse_data_level(self, value: str) -> TimerLevel:
+        """Get the value of the field and convert it to a Level type."""
+        return TimerLevel[value.split()[-1].upper()]
 
     def parse_boolean(self, value: str) -> bool:
         """Get the value of the field and convert it to a boolean type."""
