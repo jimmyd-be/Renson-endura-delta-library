@@ -135,7 +135,7 @@ class RensonVentilation:
         if level == Level.OFF:
             raise Exception("Off is not a valid type for setting manual level")
 
-        data = ValueData(str(time) + " min " + level)
+        data = ValueData(str(time) + " min " + level.value)
         response = requests.post(self.__get_service_url(ServiceNames.TIMER_FIELD), data=json.dumps(data.__dict__))
 
         if response.status_code != 200:
