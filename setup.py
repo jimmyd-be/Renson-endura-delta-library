@@ -11,7 +11,7 @@ README = (HERE / "README.md").read_text()
 setup(
     name='renson_endura_delta',
     packages=find_packages(include=['renson_endura_delta']),
-    version='1.4.2',
+    version='1.4.3',
     description='Unofficial Renson endura delta Python library',
     long_description=README,
     long_description_content_type="text/markdown",
