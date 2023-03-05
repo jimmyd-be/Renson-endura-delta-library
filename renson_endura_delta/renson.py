@@ -3,6 +3,7 @@ import datetime
 import json
 import logging
 from datetime import datetime
+import re
 
 import requests
 
@@ -273,3 +274,14 @@ class RensonVentilation:
             return bool((response_server.json())["latest"])
 
         return False
+
+    def get_latest_firmware_version(self) -> bool:
+        """Get the latest Renson firmware version."""
+        json_string = '{"a":"check", "name":"D_0.fuf"}'
+
+        response_server = requests.post(self.firmware_server_url, data=json_string)
+
+        if response_server.status_code == 200:
+            return re.sub(r"D_(.*)\.fuf", r"\1", response_server.json()["url"])
+
+        return ""
