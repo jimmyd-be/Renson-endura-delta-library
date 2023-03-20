@@ -7,7 +7,7 @@ import re
 
 import requests
 
-from renson_endura_delta.field_enum import FieldEnum, FIRMWARE_VERSION
+from renson_endura_delta.field_enum import FieldEnum, FIRMWARE_VERSION, FIRMWARE_VERSION_FIELD
 from renson_endura_delta.general_enum import (Level, Quality,
                                               ServiceNames, DataType, Level)
 
