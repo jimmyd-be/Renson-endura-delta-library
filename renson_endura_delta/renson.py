@@ -55,7 +55,9 @@ class RensonVentilation:
     def get_field_value(self, all_data, fieldname: str) -> str:
         """Search for the field in the Reson JSON and return the value of it."""
         for data in all_data["ModifiedItems"]:
-            if data["Name"] == fieldname:
+            if data["Name"] == fieldname == FIRMWARE_VERSION_FIELD.name:
+                return data["Value"].split()[-1]
+            elif data["Name"] == fieldname:
                 return data["Value"]
         return ''
 
