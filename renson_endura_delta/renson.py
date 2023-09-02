@@ -1,5 +1,4 @@
 """Main class of the Renson ventilation library."""
-import datetime
 import json
 import logging
 from datetime import datetime
@@ -119,10 +118,10 @@ class RensonVentilation:
 
         if response.status_code == 200:
             json_result = response.json()
-            device_time = datetime.datetime.strptime(
+            device_time = datetime.strptime(
                 json_result["Value"], "%d %b %Y %H:%M"
             )
-            current_time = datetime.datetime.now()
+            current_time = datetime.now()
 
             if current_time != device_time:
                 data = ValueData(current_time.strftime("%d %b %Y %H:%M").lower())
