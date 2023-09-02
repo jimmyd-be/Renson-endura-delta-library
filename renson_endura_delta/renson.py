@@ -27,6 +27,7 @@ class RensonVentilation:
     data_url = "http://[host]/JSON/ModifiedItems?wsn=150324488709"
     service_url = "http://[host]/JSON/Vars/[field]?index0=0&index1=0&index2=0"
     firmware_server_url = "http://www.renson-app.com/endura_delta/firmware/check.php"
+    firmware_dowload_url = "http://www.renson-app.com/endura_delta/firmware/files/"
 
     host = None
 
@@ -78,6 +79,11 @@ class RensonVentilation:
         return self.service_url.replace("[host]", self.host).replace(
             "[field]", field.value.replace(" ", "%20")
         )
+    
+    def __get_base_url(self, path: str):
+        """Make the base url of the Renson API and return it."""
+        return "http://" + self.host + path
+        
 
     def parse_numeric(self, value: str) -> float:
         """Get the value of the field and convert it to a numeric type."""
@@ -107,6 +113,15 @@ class RensonVentilation:
 
         response = requests.post(
             self.__get_service_url(ServiceNames.SET_MANUAL_LEVEL_FIELD), data=json.dumps(data.__dict__)
+        )
+
+        if response.status_code != 200:
+            _LOGGER.error("Ventilation unit did not return 200")
+
+    def restart_device(self):
+        """Restart device"""
+        response = requests.post(
+            self.__get_base_url("/Reset")
         )
 
         if response.status_code != 200:
@@ -276,7 +291,7 @@ class RensonVentilation:
 
         return False
 
-    def get_latest_firmware_version(self) -> bool:
+    def get_latest_firmware_version(self) -> str:
         """Get the latest Renson firmware version."""
         json_string = '{"a":"check", "name":"D_0.fuf"}'
 
@@ -286,3 +301,4 @@ class RensonVentilation:
             return re.sub(r"D_(.*)\.fuf", r"\1", response_server.json()["url"])
 
         return ""
+    
