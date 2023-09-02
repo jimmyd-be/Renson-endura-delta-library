@@ -3,10 +3,11 @@ import datetime
 import json
 import logging
 from datetime import datetime
+import re
 
 import requests
 
-from renson_endura_delta.field_enum import FieldEnum, FIRMWARE_VERSION
+from renson_endura_delta.field_enum import FieldEnum, FIRMWARE_VERSION, FIRMWARE_VERSION_FIELD
 from renson_endura_delta.general_enum import (Level, Quality,
                                               ServiceNames, DataType, Level)
 
@@ -54,7 +55,9 @@ class RensonVentilation:
     def get_field_value(self, all_data, fieldname: str) -> str:
         """Search for the field in the Reson JSON and return the value of it."""
         for data in all_data["ModifiedItems"]:
-            if data["Name"] == fieldname:
+            if data["Name"] == fieldname == FIRMWARE_VERSION_FIELD.name:
+                return data["Value"].split()[-1]
+            elif data["Name"] == fieldname:
                 return data["Value"]
         return ''
 
@@ -135,7 +138,7 @@ class RensonVentilation:
         if level == Level.OFF:
             raise Exception("Off is not a valid type for setting manual level")
 
-        data = ValueData(str(time) + " min " + level)
+        data = ValueData(str(time) + " min " + level.value)
         response = requests.post(self.__get_service_url(ServiceNames.TIMER_FIELD), data=json.dumps(data.__dict__))
 
         if response.status_code != 200:
@@ -273,3 +276,14 @@ class RensonVentilation:
             return bool((response_server.json())["latest"])
 
         return False
+
+    def get_latest_firmware_version(self) -> bool:
+        """Get the latest Renson firmware version."""
+        json_string = '{"a":"check", "name":"D_0.fuf"}'
+
+        response_server = requests.post(self.firmware_server_url, data=json_string)
+
+        if response_server.status_code == 200:
+            return re.sub(r"D_(.*)\.fuf", r"\1", response_server.json()["url"])
+
+        return ""
