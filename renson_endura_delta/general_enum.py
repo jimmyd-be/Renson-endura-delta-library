@@ -60,3 +60,4 @@ class ServiceNames(ExtendedEnum):
     CO2_THRESHOLD_FIELD = "CO2 threshold"
     CO2_HYSTERESIS_FIELD = "CO2 hysteresis"
     FILTER_DAYS_FIELD = "Filter preset time"
+    FILTER_REMAIN_FIELD = "Filter remaining time"

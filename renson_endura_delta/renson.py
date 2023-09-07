@@ -1,5 +1,4 @@
 """Main class of the Renson ventilation library."""
-import datetime
 import json
 import logging
 from datetime import datetime
@@ -7,7 +6,7 @@ import re
 
 import requests
 
-from renson_endura_delta.field_enum import FieldEnum, FIRMWARE_VERSION
+from renson_endura_delta.field_enum import FILTER_PRESET_FIELD, FieldEnum, FIRMWARE_VERSION, FIRMWARE_VERSION_FIELD
 from renson_endura_delta.general_enum import (Level, Quality,
                                               ServiceNames, DataType, Level)
 
@@ -28,6 +27,7 @@ class RensonVentilation:
     data_url = "http://[host]/JSON/ModifiedItems?wsn=150324488709"
     service_url = "http://[host]/JSON/Vars/[field]?index0=0&index1=0&index2=0"
     firmware_server_url = "http://www.renson-app.com/endura_delta/firmware/check.php"
+    firmware_dowload_url = "http://www.renson-app.com/endura_delta/firmware/files/"
 
     host = None
 
@@ -79,6 +79,11 @@ class RensonVentilation:
         return self.service_url.replace("[host]", self.host).replace(
             "[field]", field.value.replace(" ", "%20")
         )
+    
+    def __get_base_url(self, path: str):
+        """Make the base url of the Renson API and return it."""
+        return "http://" + self.host + path
+        
 
     def parse_numeric(self, value: str) -> float:
         """Get the value of the field and convert it to a numeric type."""
@@ -113,16 +118,25 @@ class RensonVentilation:
         if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
+    def restart_device(self):
+        """Restart device"""
+        response = requests.post(
+            self.__get_base_url("/Reset")
+        )
+
+        if response.status_code != 200:
+            _LOGGER.error("Ventilation unit did not return 200")
+
     def sync_time(self):
         """Sync time of the Renson unit to current date and time."""
         response = requests.get(self.__get_service_url(ServiceNames.TIME_AND_DATE_FIELD))
 
         if response.status_code == 200:
             json_result = response.json()
-            device_time = datetime.datetime.strptime(
+            device_time = datetime.strptime(
                 json_result["Value"], "%d %b %Y %H:%M"
             )
-            current_time = datetime.datetime.now()
+            current_time = datetime.now()
 
             if current_time != device_time:
                 data = ValueData(current_time.strftime("%d %b %Y %H:%M").lower())
@@ -265,6 +279,16 @@ class RensonVentilation:
         if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
+    def set_remaining_filter_days(self, days: int):
+        """Set the remaining filter days."""
+        data = ValueData(str(int(days)))
+        response = requests.post(
+            self.__get_service_url(ServiceNames.FILTER_REMAIN_FIELD), data=json.dumps(data.__dict__)
+        )
+
+        if response.status_code != 200:
+            _LOGGER.error("Ventilation unit did not return 200")
+
     def is_firmware_up_to_date(self, current_version) -> bool:
         """Check if the Renson firmware is up to date."""
         # version = self.get_field_value(FIRMWARE_VERSION).split()[-1]
@@ -277,7 +301,7 @@ class RensonVentilation:
 
         return False
 
-    def get_latest_firmware_version(self) -> bool:
+    def get_latest_firmware_version(self) -> str:
         """Get the latest Renson firmware version."""
         json_string = '{"a":"check", "name":"D_0.fuf"}'
 
@@ -287,3 +311,11 @@ class RensonVentilation:
             return re.sub(r"D_(.*)\.fuf", r"\1", response_server.json()["url"])
 
         return ""
+    
+    def reset_filter(self):
+        """Reset filter timer"""
+        data = self.get_all_data()
+        filter_preset = self.parse_numeric(self.get_field_value(data, FILTER_PRESET_FIELD.name))
+        self.set_remaining_filter_days(filter_preset);
+    
+    
