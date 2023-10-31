@@ -316,6 +316,6 @@ class RensonVentilation:
         """Reset filter timer"""
         data = self.get_all_data()
         filter_preset = self.parse_numeric(self.get_field_value(data, FILTER_PRESET_FIELD.name))
-        self.set_remaining_filter_days(filter_preset);
+        self.set_remaining_filter_days(filter_preset)
     
     
