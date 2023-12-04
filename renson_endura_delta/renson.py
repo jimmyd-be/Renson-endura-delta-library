@@ -6,7 +6,7 @@ import re
 
 import requests
 
-from renson_endura_delta.field_enum import FieldEnum, FIRMWARE_VERSION, FIRMWARE_VERSION_FIELD
+from renson_endura_delta.field_enum import FILTER_PRESET_FIELD, FieldEnum, FIRMWARE_VERSION, FIRMWARE_VERSION_FIELD
 from renson_endura_delta.general_enum import (Level, Quality,
                                               ServiceNames, DataType, Level)
 
@@ -279,6 +279,16 @@ class RensonVentilation:
         if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
+    def set_remaining_filter_days(self, days: int):
+        """Set the remaining filter days."""
+        data = ValueData(str(int(days)))
+        response = requests.post(
+            self.__get_service_url(ServiceNames.FILTER_REMAIN_FIELD), data=json.dumps(data.__dict__)
+        )
+
+        if response.status_code != 200:
+            _LOGGER.error("Ventilation unit did not return 200")
+
     def is_firmware_up_to_date(self, current_version) -> bool:
         """Check if the Renson firmware is up to date."""
         # version = self.get_field_value(FIRMWARE_VERSION).split()[-1]
@@ -301,4 +311,11 @@ class RensonVentilation:
             return re.sub(r"D_(.*)\.fuf", r"\1", response_server.json()["url"])
 
         return ""
+    
+    def reset_filter(self):
+        """Reset filter timer"""
+        data = self.get_all_data()
+        filter_preset = self.parse_numeric(self.get_field_value(data, FILTER_PRESET_FIELD.name))
+        self.set_remaining_filter_days(filter_preset)
+    
     
