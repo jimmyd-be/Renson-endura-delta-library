@@ -199,7 +199,7 @@ class RensonVentilation:
     def set_night_time(self, night: str):
         """Set night time for the device."""
         data = ValueData(night)
-        response = requests.post(self.__get_service_url(ServiceNames.NIGTHTIME_FIELD), data=json.dumps(data.__dict__))
+        response = requests.post(self.__get_service_url(ServiceNames.NIGHTTIME_FIELD), data=json.dumps(data.__dict__))
 
         if response.status_code != 200:
             _LOGGER.error("Start nighttime cannot be set")
