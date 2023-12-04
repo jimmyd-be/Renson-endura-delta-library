@@ -188,14 +188,16 @@ class RensonVentilation:
         if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
-    def set_time(self, day: str, night: str):
-        """Set day and night time for the device."""
+    def set_day_time(self, day: str):
+        """Set day time for the device."""
         data = ValueData(day)
         response = requests.post(self.__get_service_url(ServiceNames.DAYTIME_FIELD), data=json.dumps(data.__dict__))
 
         if response.status_code != 200:
             _LOGGER.error("Start daytime cannot be set")
 
+    def set_night_time(self, night: str):
+        """Set night time for the device."""
         data = ValueData(night)
         response = requests.post(self.__get_service_url(ServiceNames.NIGTHTIME_FIELD), data=json.dumps(data.__dict__))
 
