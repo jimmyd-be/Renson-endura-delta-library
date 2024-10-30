@@ -164,7 +164,7 @@ class RensonVentilation:
         if level == Level.HOLIDAY or level == Level.OFF or level == Level.BREEZE:
             raise Exception("Holiday, Off, Breeze are not a valid types for setting breeze level")
 
-        data = ValueData(level)
+        data = ValueData(str(level.value))
         response = requests.post(
             self.__get_service_url(ServiceNames.BREEZE_LEVEL_FIELD), data=json.dumps(data.__dict__)
         )
@@ -215,7 +215,7 @@ class RensonVentilation:
         if night == Level.HOLIDAY or night == Level.OFF or night == Level.BREEZE:
             raise Exception("Holiday, Off, Breeze are not a valid types for setting night level")
 
-        data = ValueData(day.value)
+        data = ValueData(str(day.value))
         response = requests.post(
             self.__get_service_url(ServiceNames.DAY_POLLUTION_FIELD), data=json.dumps(data.__dict__)
         )
@@ -223,7 +223,7 @@ class RensonVentilation:
         if response.status_code != 200:
             _LOGGER.error("Ventilation unit did not return 200")
 
-        data = ValueData(night.value)
+        data = ValueData(str(night.value))
         response = requests.post(
             self.__get_service_url(ServiceNames.NIGHT_POLLUTION_FIELD), data=json.dumps(data.__dict__)
         )
